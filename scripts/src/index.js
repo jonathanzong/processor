@@ -68,5 +68,10 @@ $(document).ready(function() {
     texts[texts.length - 1] = $('.explore-entry-edit').val();
     saveState();
   })
-
+  
+  $('#clear').click(function() {
+    state = [];
+    saveState();
+    stateToView();
+  })
 });
