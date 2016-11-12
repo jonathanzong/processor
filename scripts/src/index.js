@@ -58,6 +58,9 @@ $(document).ready(function() {
     var $textarea = $('<textarea>', {'class': 'explore-entry-edit'});
     $textarea.val(copylast);
     $entryContainer.append($textarea);
+    $textarea.prop('selectionStart', 0);
+    $textarea.prop('selectionEnd', copylast.length);
+    $textarea.focus();
     return false;
   });
   $(document).on('focusout', '.explore-entry-edit', function() {
