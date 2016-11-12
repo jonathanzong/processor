@@ -90,6 +90,13 @@ $(document).ready(function() {
       iterate(texts.length - 1);
     }
   });
+  $(document).on('keydown', function(e) {
+    var keyCode = e.keyCode || e.which;
+    if (keyCode == 27) {
+      // esc
+      $('.jot-form-text').focus();
+    }
+  })
 
   $('#clear').click(function() {
     state = [];
