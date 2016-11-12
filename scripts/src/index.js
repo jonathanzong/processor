@@ -39,6 +39,7 @@ $(document).ready(function() {
   stateToView();
   $('#jot-form').submit(function(e) {
     state.push([$('.jot-form-text').val()]);
+    $('.jot-form-text').val("");
     saveState();
     stateToView();
     return false;
@@ -68,7 +69,7 @@ $(document).ready(function() {
     texts[texts.length - 1] = $('.explore-entry-edit').val();
     saveState();
   })
-  
+
   $('#clear').click(function() {
     state = [];
     saveState();
