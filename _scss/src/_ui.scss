@@ -50,6 +50,13 @@ input[type="submit"] {
   padding: 15px;
   background: #F0F1F2;
   margin: 15px 0;
+  &:hover {
+    cursor: pointer;
+    background: #FFFFFF;
+  }
+  &.active {
+    background: #FFFFFF;
+  }
 }
 
 .exploring-pane {
@@ -64,6 +71,10 @@ input[type="submit"] {
   background: #FFFFFF;
   margin: 15px 0;
   border: 1px solid #B3B6BB;
+  &:hover {
+    border: 1px solid #FFFFFF;
+    cursor: pointer;
+  }
 }
 
 .explore-entry-edit {

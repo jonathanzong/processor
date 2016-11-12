@@ -18,6 +18,9 @@ function stateToView() {
     var text = d[0];
     var $div = $('<div>', {'class': 'jot-entry', 'data-idx': i});
     $div.text(text);
+    if (i == activeIndex) {
+      $div.addClass('active');
+    }
     $container.prepend($div);
   });
 }
@@ -33,12 +36,31 @@ function activeIndexToView(index) {
   });
 }
 
+function iterate(index) {
+  var texts = state[activeIndex];
+  $('.explore-entry-edit').replaceWith(function() {
+    var $div = $('<div>', {'class': 'explore-entry', 'data-idx': texts.length - 1});
+    $div.text($(this).val());
+    return $div;
+  });
+  var copy = texts[index];
+  texts.push(copy);
+  var $textarea = $('<textarea>', {'class': 'explore-entry-edit'});
+  $textarea.val(copy);
+  $entryContainer.append($textarea);
+  $textarea.prop('selectionStart', 0);
+  $textarea.prop('selectionEnd', copy.length);
+  $textarea.focus();
+}
+
 $(document).ready(function() {
   $entryContainer = $('.explore-entry-container');
   loadState();
   stateToView();
   $('#jot-form').submit(function(e) {
-    state.push([$('.jot-form-text').val()]);
+    var val = $('.jot-form-text').val();
+    if (val.length < 1) return;
+    state.push([val]);
     $('.jot-form-text').val("");
     saveState();
     stateToView();
@@ -46,33 +68,46 @@ $(document).ready(function() {
   });
   $(document).on('click', '.jot-entry', function() {
     activeIndexToView($(this).attr('data-idx'));
+    stateToView();
   });
-  $('.explore-button').click(function() {
-    var texts = state[activeIndex];
-    $('.explore-entry-edit').replaceWith(function() {
-      var $div = $('<div>', {'class': 'explore-entry', 'data-idx': texts.length - 1});
-      $div.text($(this).val());
-      return $div;
-    });
-    var copylast = texts[texts.length - 1];
-    texts.push(copylast);
-    var $textarea = $('<textarea>', {'class': 'explore-entry-edit'});
-    $textarea.val(copylast);
-    $entryContainer.append($textarea);
-    $textarea.prop('selectionStart', 0);
-    $textarea.prop('selectionEnd', copylast.length);
-    $textarea.focus();
+  $(document).on('click', '.explore-entry', function() {
+    iterate($(this).attr('data-idx'));
     return false;
   });
   $(document).on('focusout', '.explore-entry-edit', function() {
     var texts = state[activeIndex];
-    texts[texts.length - 1] = $('.explore-entry-edit').val();
+    var val =  $('.explore-entry-edit').val();
+    if (val.length < 1) return;
+    texts[texts.length - 1] = val;
     saveState();
-  })
+  });
+  $(document).on('keydown', '.explore-entry-edit', function(e) {
+    var keyCode = e.keyCode || e.which; 
+    if (keyCode == 9) {
+      // tab
+      e.preventDefault();
+      var texts = state[activeIndex];
+      iterate(texts.length - 1);
+    }
+  });
 
   $('#clear').click(function() {
     state = [];
     saveState();
     stateToView();
-  })
+  });
+
+  $('#copy').click(function() {
+    var $temp = $("<textarea>");
+    $("body").append($temp);
+    var str = "";
+    $.each(state, function(i) {
+      $.each(state[i], function(j, d) {
+        str += d + '\n\n';
+      });
+    });
+    $temp.val(str).select();
+    document.execCommand("copy");
+    $temp.remove();
+  });
 });
