@@ -68,20 +68,6 @@ input[type="submit"] {
   padding: 5px 15px;
 }
 
-.jot-entry {
-  width: 100%;
-  padding: 15px;
-  background: #F0F1F2;
-  margin: 15px 0;
-  &:hover {
-    cursor: pointer;
-    background: #FFFFFF;
-  }
-  &.active {
-    background: #FFFFFF;
-  }
-}
-
 .exploring-pane {
   height: 100%;
   min-height: 100vh;

@@ -10,6 +10,24 @@
   max-height: 100vh;
   overflow-y: scroll;
   flex: 1;
+
+  display: flex;
+  flex-flow: column;
+  justify-content: flex-end;
+}
+
+.jot-entry {
+  width: 100%;
+  padding: 15px;
+  background: #F0F1F2;
+  margin: 10px 0;
+  &:hover {
+    cursor: pointer;
+    background: #FFFFFF;
+  }
+  &.active {
+    background: #FFFFFF;
+  }
 }
 
 #jot-form {
