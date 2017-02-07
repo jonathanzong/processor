@@ -15,6 +15,7 @@ function loadState() {
 function stateToView() {
   var $container = $('.jot-entry-container');
   $container.empty();
+  // populate
   $.each(state, function(i, d) {
     var text = d[0];
     var $div = $('<div>', {'class': 'jot-entry', 'data-idx': i});
@@ -24,6 +25,15 @@ function stateToView() {
     }
     $container.append($div);
   });
+  // update menu
+  if (state.length) {
+    $('.jot-form-header-emptymenu').addClass('hidden');
+    $('.jot-form-header-menu').removeClass('hidden');
+  }
+  else {
+    $('.jot-form-header-emptymenu').removeClass('hidden');
+    $('.jot-form-header-menu').addClass('hidden'); 
+  }
 }
 
 function activeIndexToView(index) {
@@ -60,7 +70,7 @@ $(document).ready(function() {
   autosize($('textarea'));
   // import prompt
   $('.jot-form-import').click(function() {
-    $('#dialog-message').dialog({
+    $('#import-dialog').dialog({
       modal: true,
       buttons: {
         Cancel: function() {

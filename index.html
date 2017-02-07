@@ -16,7 +16,7 @@ layout: default
         <div class="jot-form-header">
           <div class="jot-form-header-title">Processor</div>
           <div class="jot-form-header-emptymenu"><a href="#" class="jot-form-import">Import</a></div>
-          <div class="jot-form-header-menu hidden"><a href="#">Copy</a> <a href="#">Clear</a></div>
+          <div class="jot-form-header-menu hidden"><a href="#">Copy</a> <a href="#" class="jot-form-clear">Clear</a></div>
         </div>
         <textarea class="jot-form-text" name="jot" rows="1" placeholder="Jot down some thoughts..." autofocus></textarea>
         <!-- <input class="jot-form-submit" type="submit" value="Save (enter)" /> -->
@@ -32,6 +32,9 @@ layout: default
 </div>
 
 
-<div id="dialog-message" title="Import text">
+<div id="import-dialog" class="dialog-box" title="Import text">
   <textarea class="import-text" name="import" rows="1" placeholder="Paste text here." autofocus></textarea>
+</div>
+<div id="clear-dialog" class="dialog-box" title="Clear text">
+  All text will be cleared and cannot be recovered. Are you sure?
 </div>

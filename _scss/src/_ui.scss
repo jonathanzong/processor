@@ -28,11 +28,11 @@ a:hover {
   text-decoration: none;
 }
 
-#dialog-message {
+.dialog-box {
   display: none;
 }
 
-.ui-dialog #dialog-message {
+.ui-dialog .dialog-box {
   display: block;
 }
 
