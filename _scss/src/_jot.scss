@@ -1,0 +1,29 @@
+.jotting-pane {
+  height: 100%;
+  min-height: 100vh;
+  background: #DADDE0;
+}
+
+#jot-form {
+  background: white;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+}
+
+#jot-form .jot-form-header {
+  height: 3em;
+  padding: 11px;
+  background: black;
+  color: white;
+}
+
+#jot-form .jot-form-header > div {
+  display: inline-block;
+  float: right;
+}
+
+#jot-form .jot-form-header .jot-form-header-title {
+  float: left;
+}

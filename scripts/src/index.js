@@ -1,4 +1,5 @@
 var STORAGE_KEY = 'processor-data-lalala';
+var PARAGRAPH_RE = /(\n|^).*?(?=\n|$)/g;
 var state = [];
 var activeIndex = -1;
 var $entryContainer;
@@ -54,6 +55,30 @@ function iterate(index) {
 }
 
 $(document).ready(function() {
+  // initialize ui things
+
+  autosize($('textarea'));
+  // import prompt
+  $('.jot-form-import').click(function() {
+    $('#dialog-message').dialog({
+      modal: true,
+      buttons: {
+        Cancel: function() {
+          $( this ).dialog( "close" );
+        },
+        Ok: function() {
+          var text = $('.import-text').val();
+          var paragraphs = text.match(PARAGRAPH_RE)
+                               .map(function(n) { return n.trim(); })
+                               .filter(function(n){ return n.length; }); 
+          state = paragraphs.map(function(n) {return [n];}).reverse();
+          stateToView();
+          $( this ).dialog( "close" );
+        }
+      }
+    });
+  });
+
   $entryContainer = $('.explore-entry-container');
   loadState();
   stateToView();
@@ -118,3 +143,12 @@ $(document).ready(function() {
     $temp.remove();
   });
 });
+
+// import prompt handler
+function importPrompt() {
+  var input = prompt("Please paste your text into this tiny box.");
+  
+  if (input != null) {
+    console.log(input);
+  }
+}

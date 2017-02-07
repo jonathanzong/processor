@@ -4,22 +4,34 @@ layout: default
 
 <div class="container-fluid">
   <div class="row">
+    <div class="col-sm-1"></div>
     <div class="col-sm-4 jotting-pane">
-      <form id="jot-form">
-        <input class="jot-form-text" type="text" name="jot" placeholder="Jot down some thoughts... (esc)" />
-        <input class="jot-form-submit" type="submit" value="Save (enter)" />
-      </form>
       <div class="jot-entry-container">
         <!-- -->
       </div>
-      <button id="copy">copy all text to clipboard</button><br/>
-      <button id="clear">clear</button>
+      <!-- <button id="copy">copy all text to clipboard</button><br/>
+      <button id="clear">clear</button> -->
+
+      <form id="jot-form">
+        <div class="jot-form-header">
+          <div class="jot-form-header-title">Processor</div>
+          <div class="jot-form-header-emptymenu"><a href="#" class="jot-form-import">Import</a></div>
+          <div class="jot-form-header-menu hidden"><a href="#">Copy</a> <a href="#">Clear</a></div>
+        </div>
+        <textarea class="jot-form-text" name="jot" rows="1" placeholder="Jot down some thoughts..." autofocus></textarea>
+        <!-- <input class="jot-form-submit" type="submit" value="Save (enter)" /> -->
+      </form>
     </div>
-    <div class="col-sm-8 exploring-pane">
+    <div class="col-sm-7 exploring-pane">
       <div class="explore-entry-container">
         <!-- -->
       </div>
       <input class="explore-button" type="submit" value="Iterate (tab)" />
     </div>
   </div>
+</div>
+
+
+<div id="dialog-message" title="Import text">
+  <textarea class="import-text" name="import" rows="1" placeholder="Paste text here." autofocus></textarea>
 </div>
