@@ -44,6 +44,10 @@ a:hover {
   background: rgba(0,0,0,0.3);
 }
 
+.ui-dialog-titlebar-close {
+  display: none;
+}
+
 textarea {
   background: white;
   font-family: 'Space Mono', monospace;
