@@ -1,14 +1,19 @@
 .jotting-pane {
-  height: 100%;
-  min-height: 100vh;
+  height: 100vh;
   background: #DADDE0;
+  display: flex;
+  flex-flow: column;
+  padding: 0;
+}
+
+.jot-entry-container {
+  max-height: 100vh;
+  overflow-y: scroll;
+  flex: 1;
 }
 
 #jot-form {
   background: white;
-  position: absolute;
-  bottom: 0;
-  left: 0;
   width: 100%;
 }
 

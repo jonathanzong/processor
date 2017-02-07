@@ -22,7 +22,7 @@ function stateToView() {
     if (i == activeIndex) {
       $div.addClass('active');
     }
-    $container.prepend($div);
+    $container.append($div);
   });
 }
 
@@ -71,12 +71,21 @@ $(document).ready(function() {
           var paragraphs = text.match(PARAGRAPH_RE)
                                .map(function(n) { return n.trim(); })
                                .filter(function(n){ return n.length; }); 
-          state = paragraphs.map(function(n) {return [n];}).reverse();
+          state = paragraphs.map(function(n) {return [n];});
+          saveState();
           stateToView();
           $( this ).dialog( "close" );
         }
       }
     });
+  });
+  // cmd+enter to submit form
+  $('.jot-form-text').keydown(function(e) {
+    if(e.keyCode == 13 && e.metaKey) {
+      $('#jot-form').submit();
+      var $container = $('.jot-entry-container');
+      $container.animate({"scrollTop": $container[0].scrollHeight}, 100);
+    }
   });
 
   $entryContainer = $('.explore-entry-container');
