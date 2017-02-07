@@ -6,10 +6,15 @@
   padding: 0;
 }
 
+.jot-entry-scroll {
+  flex: 1;
+  height: 100vh;
+  overflow-y: scroll;
+}
+
 .jot-entry-container {
   max-height: 100vh;
-  overflow-y: scroll;
-  flex: 1;
+  min-height: 100%;
 
   display: flex;
   flex-flow: column;
