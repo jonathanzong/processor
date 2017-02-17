@@ -92,3 +92,20 @@ input[type="submit"] {
   padding: 5px 15px;
 }
 
+.flickity-prev-next-button {
+  width: 15px;
+  height: 15px;
+  top: auto;
+  bottom: 3px;
+  &.next {
+    right: 5px;
+  }
+  &.previous {
+    left: 5px;
+  }
+  background: transparent;
+}
+
+.flickity-prev-next-button:disabled {
+  display: none;
+}
