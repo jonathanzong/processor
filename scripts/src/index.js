@@ -58,24 +58,24 @@ function iterate($jotEntry) {
   data.iterations.push(copiedText);
   var i = data.iterations.length - 1;
   var $iterdiv = $('<div>', {'class': 'jot-entry-iteration', 'data-idx': i});
-  var $textarea = $('<textarea>');
-  $textarea.val(copiedText);
-  $iterdiv.append($textarea);
+  $iterdiv.text(copiedText);
   $jotEntry.flickity( 'append', $iterdiv );
+  makeIterationEditable($iterdiv);
+}
+
+function makeIterationEditable($iterdiv) {
+  var $textarea = $('<textarea>');
+  var text = $iterdiv.text();
+  $textarea.val(text);
+  $iterdiv.empty();
+  $iterdiv.append($textarea);
   autosize($textarea);
+  var $jotEntry = $iterdiv.parent('.jot-entry');
   $jotEntry.flickity('resize');
-  $jotEntry.flickity( 'select', i);
+  $jotEntry.flickity( 'select', $iterdiv.attr('data-idx'));
   $textarea.prop('selectionStart', 0);
-  $textarea.prop('selectionEnd', copiedText.length);
+  $textarea.prop('selectionEnd', text.length);
   $textarea.focus();
-  // focus out to finish editing
-  $textarea.one('focusout', function() {
-    var text = $textarea.val();
-    data.iterations[i] = text;
-    $textarea.remove();
-    $iterdiv.text(text);
-    $jotEntry.flickity('resize');
-  });
 }
 
 $(document).ready(function() {
@@ -203,10 +203,25 @@ $(document).ready(function() {
       $('.jot-entry').removeClass('active');
       $this.addClass('active');
       $(document).tooltip('enable');
+      // make selected editable
+      var $iterdiv = $($this.data('flickity').selectedElement);
+      makeIterationEditable($iterdiv);
     }
     else {
       $(document).tooltip('disable');
     }
+  });
+  // focus out to finish editing
+  $(document).on('focusout', '.jot-entry-iteration textarea', function() {
+    var $this = $(this);
+    var text = $this.val();
+    var $jotEntry = $this.parents('.jot-entry');
+    var $iterdiv = $this.parent('.jot-entry-iteration');
+    var data = state[$jotEntry.attr('data-idx')];
+    data.iterations[$iterdiv.attr('data-idx')] = text;
+    $this.remove();
+    $iterdiv.text(text);
+    $jotEntry.flickity('resize');
   });
   // tab to iterate tooltip
   $(document).tooltip({
