@@ -250,6 +250,7 @@ $(document).ready(function() {
       // tab
       e.preventDefault();
       if ($(this).hasClass('active')) {
+        $(this).focus();
         iterate($(this));
       }
     }
