@@ -58,15 +58,29 @@ function stateToView() {
   }
 }
 
-function iterate(data) {
+function iterate($carousel, data) {
   var copiedText = data.iterations[data.selected];
   data.iterations.push(copiedText);
-  var $textarea = $('.jot-form-text'); // TODO wrong textarea
+  var i = data.iterations.length - 1;
+  var $iterdiv = $('<div>', {'class': 'jot-entry-iteration', 'data-idx': i});
+  var $textarea = $('<textarea>');
   $textarea.val(copiedText);
+  $iterdiv.append($textarea);
+  $carousel.flickity( 'append', $iterdiv );
+  autosize($textarea);
+  $carousel.flickity('resize');
+  $carousel.flickity( 'select', i);
   $textarea.prop('selectionStart', 0);
   $textarea.prop('selectionEnd', copiedText.length);
   $textarea.focus();
-  stateToView(); // TODO inefficient
+  // focus out to finish editing
+  $textarea.one('focusout', function() {
+    var text = $textarea.val();
+    data.iterations[i] = text;
+    $textarea.remove();
+    $iterdiv.text(text);
+    $carousel.flickity('resize');
+  });
 }
 
 $(document).ready(function() {
@@ -184,7 +198,7 @@ $(document).ready(function() {
     });
     $('.jot-form-text').val("");
     saveState();
-    stateToView();
+    stateToView(); // TODO inefficient
     return false;
   });
   $(document).on('click', '.jot-entry', function() {
@@ -200,7 +214,7 @@ $(document).ready(function() {
       // tab
       e.preventDefault();
       if (activeIndex > -1) {
-        iterate(state[activeIndex]);
+        iterate($(this), state[activeIndex]);
       }
     }
   });

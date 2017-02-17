@@ -39,6 +39,7 @@
   margin: 15px 30px;
   background: white;
   border: 0.5px solid white;
+  width: 100%;
 }
 
 .jot-entry.active, .jot-entry:hover {
@@ -70,4 +71,8 @@
 
 #jot-form .jot-form-header > div > a {
   margin-left: 5px;
+}
+
+.jot-form-text {
+  max-height: 5em;
 }
