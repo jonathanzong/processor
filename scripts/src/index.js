@@ -265,7 +265,9 @@ $(document).ready(function() {
   // click outside to deselect a jot
   $(document).click(function(event) { 
     if(!$(event.target).closest('.jot-entry').length) {
-      $('.jot-entry').removeClass('active');
+      if ($('.jot-entry.active textarea').length() == 0) {
+        $('.jot-entry').removeClass('active');
+      }
     }
   });
 });
