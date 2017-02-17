@@ -196,23 +196,26 @@ $(document).ready(function() {
     stateToView(); // TODO inefficient
     return false;
   });
+  // click handler to choose active jot entry
   $(document).on('click', '.jot-entry', function() {
     var $this = $(this);
     if (!$this.hasClass('active')) {
       $('.jot-entry').removeClass('active');
       $this.addClass('active');
-      // tooltip
-      $this.attr('title', 'tab to iterate');
-      $this.tooltip({
-        position: { my: "left center", at: "right center" },
-        // disabled: true
-      });
-      $this.tooltip('enable').tooltip('open');
-    } else {
-      $this.tooltip('close').tooltip('disable');
+      $(document).tooltip('enable');
     }
-    
+    else {
+      $(document).tooltip('disable');
+    }
   });
+  // tab to iterate tooltip
+  $(document).tooltip({
+    items: '.jot-entry.active',
+    content: 'tab to iterate',
+    position: { my: "left center", at: "right center" },
+    disabled: true
+  });
+  // tab to iterate handler
   $(document).on('keydown', '.jot-entry', function(e) {
     var keyCode = e.keyCode || e.which; 
     if (keyCode == 9) {
