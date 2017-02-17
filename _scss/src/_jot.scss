@@ -1,8 +1,8 @@
 .jotting-pane {
   height: 100vh;
-  background: #DADDE0;
   display: flex;
   flex-flow: column;
+  background: white;
   padding: 0;
 }
 
@@ -22,9 +22,8 @@
 
 .jot-entry {
   width: 100%;
-  padding: 15px;
-  background: #F0F1F2;
-  margin: 10px 0;
+  padding: 0.5em 0;
+  border-bottom: 0.5px solid #F0F1F2;
   &:hover {
     cursor: pointer;
     background: #FFFFFF;
@@ -35,11 +34,12 @@
 }
 
 .jot-entry-iteration {
-  padding: 15px;
-  margin: 15px 30px;
+  padding: 0 10px;
+  margin: 0 5px;
   background: white;
   border: 0.5px solid white;
-  width: 100%;
+  width: 90%;
+  white-space: pre-wrap;
 }
 
 .jot-entry.active, .jot-entry:hover {
@@ -53,26 +53,26 @@
   width: 100%;
 }
 
-#jot-form .jot-form-header {
+.jot-form-text {
+  max-height: 5em;
+}
+
+.jot-form-header {
   height: 3em;
   padding: 11px;
   background: black;
   color: white;
 }
 
-#jot-form .jot-form-header > div {
+.jot-form-header > div {
   display: inline-block;
   float: right;
 }
 
-#jot-form .jot-form-header .jot-form-header-title {
+.jot-form-header .jot-form-header-title {
   float: left;
 }
 
-#jot-form .jot-form-header > div > a {
+.jot-form-header > div > a {
   margin-left: 5px;
-}
-
-.jot-form-text {
-  max-height: 5em;
 }

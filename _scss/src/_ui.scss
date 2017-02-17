@@ -12,6 +12,7 @@ html, body {
   height: 100vh;
   padding: 0;
   margin: 0;
+  background: #DADDE0;
   font-family: 'Karla', sans-serif;
 }
 
@@ -91,31 +92,3 @@ input[type="submit"] {
   padding: 5px 15px;
 }
 
-.exploring-pane {
-  height: 100%;
-  min-height: 100vh;
-  background: #FBFBFB;
-}
-
-.explore-entry {
-  width: 100%;
-  padding: 15px;
-  background: #FFFFFF;
-  margin: 15px 0;
-  border: 1px solid #B3B6BB;
-  &:hover {
-    border: 1px solid #FFFFFF;
-    cursor: pointer;
-  }
-}
-
-.explore-entry-edit {
-  @extend .explore-entry;
-  outline: none;
-  resize: none;
-}
-
-.explore-button {
-  margin-top: 30px !important;
-  margin-bottom: 30px !important;
-}

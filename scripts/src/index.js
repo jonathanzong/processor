@@ -16,6 +16,9 @@ function saveState() {
 
 function loadState() {
   state = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+  $.each(state, function(i, d) {
+    d.iterations = d.iterations.filter(function(n){ return n.trim().length > 0; }); 
+  });
 }
 
 function stateToView() {
@@ -31,7 +34,8 @@ function stateToView() {
     });
     $container.append($div);
     $div.flickity({
-      initialIndex: d.selected
+      initialIndex: d.selected,
+      pageDots: false
     });
     $div.on( 'select.flickity', function() {
       d.selected = $(this).data('flickity').selectedIndex;
@@ -57,10 +61,11 @@ function iterate($jotEntry) {
   var $iterdiv = $('<div>', {'class': 'jot-entry-iteration', 'data-idx': i});
   $iterdiv.text(copiedText);
   $jotEntry.flickity( 'append', $iterdiv );
-  makeIterationEditable($iterdiv);
+  makeIterationEditable($iterdiv, true);
 }
 
-function makeIterationEditable($iterdiv) {
+function makeIterationEditable($iterdiv, selectAll) {
+  if ($iterdiv.children('textarea').length > 0) return;
   var $textarea = $('<textarea>');
   var text = $iterdiv.text();
   $textarea.val(text);
@@ -70,8 +75,10 @@ function makeIterationEditable($iterdiv) {
   var $jotEntry = $iterdiv.parents('.jot-entry');
   $jotEntry.flickity('resize');
   $jotEntry.flickity( 'select', $iterdiv.attr('data-idx'));
-  $textarea.prop('selectionStart', 0);
-  $textarea.prop('selectionEnd', text.length);
+  if (selectAll) {
+    $textarea.prop('selectionStart', 0);
+    $textarea.prop('selectionEnd', text.length);
+  }
   $textarea.focus();
 }
 
@@ -129,10 +136,8 @@ $(document).ready(function() {
     var $temp = $("<textarea>");
     $("body").append($temp);
     var str = "";
-    $.each(state, function(i) {
-      $.each(state[i], function(j, d) {
-        str += d + '\n\n';
-      });
+    $.each(state, function(i, d) {
+      str += d.iterations[d.selected] + '\n\n';
     });
     $temp.val(str.trim()).select();
     document.execCommand("copy");
@@ -222,8 +227,14 @@ $(document).ready(function() {
     var data = state[$jotEntry.attr('data-idx')];
     data.iterations[$iterdiv.attr('data-idx')] = text;
     $this.remove();
-    $iterdiv.text(text);
+    if (text.trim().length == 0) {
+      $jotEntry.flickity( 'remove', $iterdiv );
+      $jotEntry.flickity( 'previous' );
+    } else {
+      $iterdiv.text(text);
+    }
     $jotEntry.flickity('resize');
+    saveState();
   });
   // tab to iterate tooltip
   $(document).tooltip({
@@ -244,13 +255,19 @@ $(document).ready(function() {
     }
   });
   $(document).on('keydown', '.jot-entry.active', function(e) {
-    if(e.keyCode == 37 && e.metaKey) {
+    if (e.keyCode == 37 && e.metaKey) {
       // cmd + left
       $(this).flickity('previous');
     }
-    else if(e.keyCode == 39 && e.metaKey) {
+    else if (e.keyCode == 39 && e.metaKey) {
       // cmd + right
       $(this).flickity('next');
+    }
+    else if (e.keyCode == 8 || e.keyCode == 46) {
+      // delete || backspace
+      if ($('.jot-entry.active textarea').length == 0) {
+        $(this).remove();
+      }
     }
   });
   // esc to focus the jot text box
@@ -258,14 +275,19 @@ $(document).ready(function() {
     var keyCode = e.keyCode || e.which;
     if (keyCode == 27) {
       // esc
-      $('.jot-entry').removeClass('active');
-      $('.jot-form-text').focus();
+      if ($('.jot-entry.active textarea').length == 0) {
+        $('.jot-entry').removeClass('active');
+        $('.jot-form-text').focus();
+      }
+      else {
+        $('.jot-entry.active').focus();
+      }
     }
   });
   // click outside to deselect a jot
   $(document).click(function(event) { 
     if(!$(event.target).closest('.jot-entry').length) {
-      if ($('.jot-entry.active textarea').length() == 0) {
+      if ($('.jot-entry.active textarea').length == 0) {
         $('.jot-entry').removeClass('active');
       }
     }

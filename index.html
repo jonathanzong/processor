@@ -6,6 +6,11 @@ layout: default
   <div class="row">
     <div class="col-sm-1"></div>
     <div class="col-sm-4 jotting-pane">
+        <div class="jot-form-header">
+          <div class="jot-form-header-title">Processor</div>
+          <div class="jot-form-header-emptymenu"><a href="#" class="jot-form-import">Import</a></div>
+          <div class="jot-form-header-menu hidden"><a href="#" class="jot-form-copy">Copy</a> <a href="#" class="jot-form-clear">Clear</a></div>
+        </div>
       <div class="jot-entry-scroll">
         <div class="jot-entry-container">
           <!-- -->
@@ -15,11 +20,6 @@ layout: default
       <button id="clear">clear</button> -->
 
       <form id="jot-form">
-        <div class="jot-form-header">
-          <div class="jot-form-header-title">Processor</div>
-          <div class="jot-form-header-emptymenu"><a href="#" class="jot-form-import">Import</a></div>
-          <div class="jot-form-header-menu hidden"><a href="#" class="jot-form-copy">Copy</a> <a href="#" class="jot-form-clear">Clear</a></div>
-        </div>
         <textarea class="jot-form-text" name="jot" rows="1" placeholder="Jot down some thoughts..." title="cmd+enter to submit" autofocus></textarea>
         <!-- <input class="jot-form-submit" type="submit" value="Save (enter)" /> -->
       </form>
