@@ -39,6 +39,13 @@ function stateToView() {
       $div.addClass('active');
     }
     $container.append($div);
+    $div.flickity({
+      initialIndex: d.selected
+    });
+    $div.on( 'select.flickity', function() {
+      d.selected = $(this).data('flickity').selectedIndex;
+      saveState();
+    })
   });
   // update menu
   if (state.length) {
@@ -51,34 +58,15 @@ function stateToView() {
   }
 }
 
-function activeIndexToView(index) {
-  activeIndex = index;
-  $entryContainer.empty();
-  $.each(state[activeIndex].iterations, function(i, d) {
-    var text = d;
-    var $div = $('<div>', {'class': 'explore-entry', 'data-idx': i});
-    $div.text(text);
-    $entryContainer.append($div);
-  });
-}
-
-function iterate(index) {
-  var data = state[activeIndex];
-  $('.explore-entry-edit').replaceWith(function() {
-    var $div = $('<div>', {'class': 'explore-entry', 'data-idx': data.iterations.length - 1});
-    $div.text($(this).val());
-    return $div;
-  });
-  console.log(index);
-  var copy = data.iterations[index];
-  console.log(copy);
-  data.iterations.push(copy);
-  var $textarea = $('<textarea>', {'class': 'explore-entry-edit'});
-  $textarea.val(copy);
-  $entryContainer.append($textarea);
+function iterate(data) {
+  var copiedText = data.iterations[data.selected];
+  data.iterations.push(copiedText);
+  var $textarea = $('.jot-form-text'); // TODO wrong textarea
+  $textarea.val(copiedText);
   $textarea.prop('selectionStart', 0);
-  $textarea.prop('selectionEnd', copy.length);
+  $textarea.prop('selectionEnd', copiedText.length);
   $textarea.focus();
+  stateToView(); // TODO inefficient
 }
 
 $(document).ready(function() {
@@ -98,7 +86,13 @@ $(document).ready(function() {
           var paragraphs = text.match(PARAGRAPH_RE)
                                .map(function(n) { return n.trim(); })
                                .filter(function(n){ return n.length; }); 
-          state = paragraphs.map(function(n) {return [n];});
+          state = paragraphs.map(function(n) {
+            return {
+              iterations: [n],
+              selected: 0
+            };
+          });
+          console.log(state);
           saveState();
           stateToView();
           $( this ).dialog( "close" );
@@ -123,7 +117,7 @@ $(document).ready(function() {
       }
     });
   });
-  // clear prompt
+  // copy prompt
   $('.jot-form-copy').click(function() {
     // copy
     var $temp = $("<textarea>");
@@ -177,7 +171,7 @@ $(document).ready(function() {
     }, 2500);
   });
 
-  $entryContainer = $('.explore-entry-container');
+  // init from storage
   loadState();
   stateToView();
   // jot form submit handler
@@ -194,34 +188,37 @@ $(document).ready(function() {
     return false;
   });
   $(document).on('click', '.jot-entry', function() {
-    activeIndexToView($(this).attr('data-idx'));
-    stateToView();
+    $('.jot-entry').removeClass('active');
+    $(this).addClass('active');
+    activeIndex = $(this).attr('data-idx');
+    // activeIndexToView($(this).attr('data-idx'));
+    // stateToView();
   });
-  $(document).on('click', '.explore-entry', function() {
-    iterate($(this).attr('data-idx'));
-    return false;
-  });
-  $(document).on('focusout', '.explore-entry-edit', function() {
-    var texts = state[activeIndex].iterations;
-    var val =  $('.explore-entry-edit').val();
-    if (val.length < 1) return;
-    texts[texts.length - 1] = val;
-    saveState();
-  });
-  $(document).on('keydown', '.explore-entry-edit', function(e) {
+  $(document).on('keydown', '.jot-entry', function(e) {
     var keyCode = e.keyCode || e.which; 
     if (keyCode == 9) {
       // tab
       e.preventDefault();
-      var data = state[activeIndex];
-      iterate(data.iterations.length - 1);
+      if (activeIndex > -1) {
+        iterate(state[activeIndex]);
+      }
     }
   });
+  // esc to focus the jot text box
   $(document).on('keydown', function(e) {
     var keyCode = e.keyCode || e.which;
     if (keyCode == 27) {
       // esc
+      $('.jot-entry').removeClass('active');
+      activeIndex = -1;
       $('.jot-form-text').focus();
     }
-  })
+  });
+  // click outside to deselect a jot
+  $(document).click(function(event) { 
+    if(!$(event.target).closest('.jot-entry').length) {
+      $('.jot-entry').removeClass('active');
+      activeIndex = -1;
+    }
+  });
 });

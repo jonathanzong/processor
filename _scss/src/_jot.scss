@@ -13,7 +13,6 @@
 }
 
 .jot-entry-container {
-  max-height: 100vh;
   min-height: 100%;
 
   display: flex;
@@ -32,6 +31,19 @@
   }
   &.active {
     background: #FFFFFF;
+  }
+}
+
+.jot-entry-iteration {
+  padding: 15px;
+  margin: 15px 30px;
+  background: white;
+  border: 0.5px solid white;
+}
+
+.jot-entry.active, .jot-entry:hover {
+  .jot-entry-iteration {
+    border: 0.5px solid #DADDE0;
   }
 }
 
