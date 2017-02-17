@@ -182,9 +182,6 @@ $(document).ready(function() {
     }, 2500);
   });
 
-  // init from storage
-  loadState();
-  stateToView();
   // jot form submit handler
   $('#jot-form').submit(function(e) {
     var val = $('.jot-form-text').val();
@@ -193,7 +190,8 @@ $(document).ready(function() {
       iterations: [val],
       selected: 0
     });
-    $('.jot-form-text').val("");
+    $('.jot-form-text').val('');
+    autosize.update($('.jot-form-text'));
     saveState();
     stateToView(); // TODO inefficient
     return false;
@@ -293,4 +291,9 @@ $(document).ready(function() {
       }
     }
   });
+
+
+  // init from storage
+  loadState();
+  stateToView();
 });
