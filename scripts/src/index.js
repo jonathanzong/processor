@@ -243,6 +243,16 @@ $(document).ready(function() {
       }
     }
   });
+  $(document).on('keydown', '.jot-entry.active', function(e) {
+    if(e.keyCode == 37 && e.metaKey) {
+      // cmd + left
+      $(this).flickity('previous');
+    }
+    else if(e.keyCode == 39 && e.metaKey) {
+      // cmd + right
+      $(this).flickity('next');
+    }
+  });
   // esc to focus the jot text box
   $(document).on('keydown', function(e) {
     var keyCode = e.keyCode || e.which;
