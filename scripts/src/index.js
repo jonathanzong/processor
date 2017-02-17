@@ -67,7 +67,7 @@ function makeIterationEditable($iterdiv) {
   $iterdiv.empty();
   $iterdiv.append($textarea);
   autosize($textarea);
-  var $jotEntry = $iterdiv.parent('.jot-entry');
+  var $jotEntry = $iterdiv.parents('.jot-entry');
   $jotEntry.flickity('resize');
   $jotEntry.flickity( 'select', $iterdiv.attr('data-idx'));
   $textarea.prop('selectionStart', 0);
