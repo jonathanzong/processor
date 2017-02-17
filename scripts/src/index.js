@@ -27,9 +27,6 @@ function stateToView() {
     $.each(d.iterations, function(_i, text) {
       var $iterdiv = $('<div>', {'class': 'jot-entry-iteration', 'data-idx': _i});
       $iterdiv.text(text);
-      if (_i == d.selected) {
-        $iterdiv.addClass('selected');
-      }
       $div.append($iterdiv);
     });
     $container.append($div);
@@ -211,6 +208,11 @@ $(document).ready(function() {
       $(document).tooltip('disable');
     }
   });
+  // click selected iteration of active jot entry to edit
+  $(document).on('click', '.jot-entry.active .jot-entry-iteration.is-selected', function() {
+    // make selected editable
+    makeIterationEditable($(this));
+  })
   // focus out to finish editing
   $(document).on('focusout', '.jot-entry-iteration textarea', function() {
     var $this = $(this);
