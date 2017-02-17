@@ -4,6 +4,15 @@ var state = [];
 var activeIndex = -1;
 var $entryContainer;
 
+/*
+state = [
+  {
+    iterations: ["example"],
+    selected: 0
+  },
+];
+*/
+
 function saveState() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
 }
@@ -17,9 +26,15 @@ function stateToView() {
   $container.empty();
   // populate
   $.each(state, function(i, d) {
-    var text = d[0];
     var $div = $('<div>', {'class': 'jot-entry', 'data-idx': i});
-    $div.text(text);
+    $.each(d.iterations, function(_i, text) {
+      var $iterdiv = $('<div>', {'class': 'jot-entry-iteration', 'data-idx': _i});
+      $iterdiv.text(text);
+      if (_i == d.selected) {
+        $iterdiv.addClass('selected');
+      }
+      $div.append($iterdiv);
+    });
     if (i == activeIndex) {
       $div.addClass('active');
     }
@@ -166,7 +181,10 @@ $(document).ready(function() {
   $('#jot-form').submit(function(e) {
     var val = $('.jot-form-text').val();
     if (val.length < 1) return;
-    state.push([val]);
+    state.push({
+      iterations: [val],
+      selected: 0
+    });
     $('.jot-form-text').val("");
     saveState();
     stateToView();
