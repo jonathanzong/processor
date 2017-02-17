@@ -1,9 +1,6 @@
 var STORAGE_KEY = 'processor-data-lalala';
 var PARAGRAPH_RE = /(\n|^).*?(?=\n|$)/g;
 var state = [];
-var activeIndex = -1;
-var $entryContainer;
-
 /*
 state = [
   {
@@ -35,9 +32,6 @@ function stateToView() {
       }
       $div.append($iterdiv);
     });
-    if (i == activeIndex) {
-      $div.addClass('active');
-    }
     $container.append($div);
     $div.flickity({
       initialIndex: d.selected
@@ -58,7 +52,8 @@ function stateToView() {
   }
 }
 
-function iterate($carousel, data) {
+function iterate($jotEntry) {
+  var data = state[$jotEntry.attr('data-idx')];
   var copiedText = data.iterations[data.selected];
   data.iterations.push(copiedText);
   var i = data.iterations.length - 1;
@@ -66,10 +61,10 @@ function iterate($carousel, data) {
   var $textarea = $('<textarea>');
   $textarea.val(copiedText);
   $iterdiv.append($textarea);
-  $carousel.flickity( 'append', $iterdiv );
+  $jotEntry.flickity( 'append', $iterdiv );
   autosize($textarea);
-  $carousel.flickity('resize');
-  $carousel.flickity( 'select', i);
+  $jotEntry.flickity('resize');
+  $jotEntry.flickity( 'select', i);
   $textarea.prop('selectionStart', 0);
   $textarea.prop('selectionEnd', copiedText.length);
   $textarea.focus();
@@ -79,7 +74,7 @@ function iterate($carousel, data) {
     data.iterations[i] = text;
     $textarea.remove();
     $iterdiv.text(text);
-    $carousel.flickity('resize');
+    $jotEntry.flickity('resize');
   });
 }
 
@@ -202,19 +197,29 @@ $(document).ready(function() {
     return false;
   });
   $(document).on('click', '.jot-entry', function() {
-    $('.jot-entry').removeClass('active');
-    $(this).addClass('active');
-    activeIndex = $(this).attr('data-idx');
-    // activeIndexToView($(this).attr('data-idx'));
-    // stateToView();
+    var $this = $(this);
+    if (!$this.hasClass('active')) {
+      $('.jot-entry').removeClass('active');
+      $this.addClass('active');
+      // tooltip
+      $this.attr('title', 'tab to iterate');
+      $this.tooltip({
+        position: { my: "left center", at: "right center" },
+        // disabled: true
+      });
+      $this.tooltip('enable').tooltip('open');
+    } else {
+      $this.tooltip('close').tooltip('disable');
+    }
+    
   });
   $(document).on('keydown', '.jot-entry', function(e) {
     var keyCode = e.keyCode || e.which; 
     if (keyCode == 9) {
       // tab
       e.preventDefault();
-      if (activeIndex > -1) {
-        iterate($(this), state[activeIndex]);
+      if ($(this).hasClass('active')) {
+        iterate($(this));
       }
     }
   });
@@ -224,7 +229,6 @@ $(document).ready(function() {
     if (keyCode == 27) {
       // esc
       $('.jot-entry').removeClass('active');
-      activeIndex = -1;
       $('.jot-form-text').focus();
     }
   });
@@ -232,7 +236,6 @@ $(document).ready(function() {
   $(document).click(function(event) { 
     if(!$(event.target).closest('.jot-entry').length) {
       $('.jot-entry').removeClass('active');
-      activeIndex = -1;
     }
   });
 });
