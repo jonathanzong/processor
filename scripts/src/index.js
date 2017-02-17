@@ -89,13 +89,75 @@ $(document).ready(function() {
       }
     });
   });
+  // clear prompt
+  $('.jot-form-clear').click(function() {
+    $('#clear-dialog').dialog({
+      modal: true,
+      buttons: {
+        Clear: function() {
+          state = [];
+          saveState();
+          stateToView();
+          $( this ).dialog( "close" );
+        },
+        Cancel: function() {
+          $( this ).dialog( "close" );
+        }
+      }
+    });
+  });
+  // clear prompt
+  $('.jot-form-copy').click(function() {
+    // copy
+    var $temp = $("<textarea>");
+    $("body").append($temp);
+    var str = "";
+    $.each(state, function(i) {
+      $.each(state[i], function(j, d) {
+        str += d + '\n\n';
+      });
+    });
+    $temp.val(str.trim()).select();
+    document.execCommand("copy");
+    $temp.remove();
+    //
+    $('#copy-dialog').dialog({
+      modal: true,
+      buttons: {
+        Ok: function() {
+          $( this ).dialog( "close" );
+        }
+      }
+    });
+  });
   // cmd+enter to submit form
   $('.jot-form-text').keydown(function(e) {
+    if ($(this).val().trim().length == 0) return;
     if(e.keyCode == 13 && e.metaKey) {
       $('#jot-form').submit();
       var $container = $('.jot-entry-container');
       $container.animate({"scrollTop": $container[0].scrollHeight}, 100);
     }
+  });
+  // tooltip
+  $('.jot-form-text').tooltip({
+    position: { my: "left center", at: "right center" },
+    disabled: true
+  });
+  $('.jot-form-text').on("mouseenter mouseleave", function (e) {
+    e.stopImmediatePropagation();
+  });
+  // show tooltip to teach keyboard shortcut
+  var tooltipTimeout;
+  $('.jot-form-text').keyup(function(e) {
+    var $this = $(this);
+    $this.tooltip('close').tooltip('disable');
+    if (tooltipTimeout) clearTimeout(tooltipTimeout);
+    tooltipTimeout = setTimeout(function() {
+      if ($this.val().trim().length > 0) {
+        $this.tooltip('enable').tooltip('open');
+      }
+    }, 2500);
   });
 
   $entryContainer = $('.explore-entry-container');
@@ -141,26 +203,6 @@ $(document).ready(function() {
       $('.jot-form-text').focus();
     }
   })
-
-  $('#clear').click(function() {
-    state = [];
-    saveState();
-    stateToView();
-  });
-
-  $('#copy').click(function() {
-    var $temp = $("<textarea>");
-    $("body").append($temp);
-    var str = "";
-    $.each(state, function(i) {
-      $.each(state[i], function(j, d) {
-        str += d + '\n\n';
-      });
-    });
-    $temp.val(str).select();
-    document.execCommand("copy");
-    $temp.remove();
-  });
 });
 
 // import prompt handler

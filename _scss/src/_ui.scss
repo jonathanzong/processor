@@ -62,6 +62,12 @@ a:hover {
   }
 }
 
+.ui-tooltip {
+  background: white;
+  color: black;
+  border: 0.5px dashed #ccc;
+}
+
 textarea {
   background: white;
   font-family: 'Space Mono', monospace;
