@@ -54,7 +54,7 @@ function stateToView() {
 function activeIndexToView(index) {
   activeIndex = index;
   $entryContainer.empty();
-  $.each(state[activeIndex], function(i, d) {
+  $.each(state[activeIndex].iterations, function(i, d) {
     var text = d;
     var $div = $('<div>', {'class': 'explore-entry', 'data-idx': i});
     $div.text(text);
@@ -63,14 +63,16 @@ function activeIndexToView(index) {
 }
 
 function iterate(index) {
-  var texts = state[activeIndex];
+  var data = state[activeIndex];
   $('.explore-entry-edit').replaceWith(function() {
-    var $div = $('<div>', {'class': 'explore-entry', 'data-idx': texts.length - 1});
+    var $div = $('<div>', {'class': 'explore-entry', 'data-idx': data.iterations.length - 1});
     $div.text($(this).val());
     return $div;
   });
-  var copy = texts[index];
-  texts.push(copy);
+  console.log(index);
+  var copy = data.iterations[index];
+  console.log(copy);
+  data.iterations.push(copy);
   var $textarea = $('<textarea>', {'class': 'explore-entry-edit'});
   $textarea.val(copy);
   $entryContainer.append($textarea);
@@ -178,6 +180,7 @@ $(document).ready(function() {
   $entryContainer = $('.explore-entry-container');
   loadState();
   stateToView();
+  // jot form submit handler
   $('#jot-form').submit(function(e) {
     var val = $('.jot-form-text').val();
     if (val.length < 1) return;
@@ -199,7 +202,7 @@ $(document).ready(function() {
     return false;
   });
   $(document).on('focusout', '.explore-entry-edit', function() {
-    var texts = state[activeIndex];
+    var texts = state[activeIndex].iterations;
     var val =  $('.explore-entry-edit').val();
     if (val.length < 1) return;
     texts[texts.length - 1] = val;
@@ -210,8 +213,8 @@ $(document).ready(function() {
     if (keyCode == 9) {
       // tab
       e.preventDefault();
-      var texts = state[activeIndex];
-      iterate(texts.length - 1);
+      var data = state[activeIndex];
+      iterate(data.iterations.length - 1);
     }
   });
   $(document).on('keydown', function(e) {
@@ -222,12 +225,3 @@ $(document).ready(function() {
     }
   })
 });
-
-// import prompt handler
-function importPrompt() {
-  var input = prompt("Please paste your text into this tiny box.");
-  
-  if (input != null) {
-    console.log(input);
-  }
-}
