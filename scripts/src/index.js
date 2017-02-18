@@ -1,5 +1,6 @@
 var STORAGE_KEY = 'processor-data-lalala';
 var PARAGRAPH_RE = /(\n|^).*?(?=\n|$)/g;
+var sheet = document.createStyleSheet();
 var state = [];
 /*
 state = [
@@ -35,7 +36,8 @@ function stateToView() {
     $container.append($div);
     $div.flickity({
       initialIndex: d.selected,
-      pageDots: false
+      pageDots: false,
+      draggable: false
     });
     $div.on( 'select.flickity', function() {
       d.selected = $(this).data('flickity').selectedIndex;
@@ -105,7 +107,6 @@ $(document).ready(function() {
               selected: 0
             };
           });
-          console.log(state);
           saveState();
           stateToView();
           $( this ).dialog( "close" );
@@ -201,6 +202,14 @@ $(document).ready(function() {
     var $this = $(this);
     if (!$this.hasClass('active')) {
       $('.jot-entry').removeClass('active');
+      var pos = getFixedPos($this[0]);
+      var iter_width = $this.find('.jot-entry-iteration').width();
+      sheet.clearRules();
+      sheet.addRule('.jot-entry.active', 'position: fixed; z-index: 999; left: 0px; top: '+pos.top+'px; background: #DADDE0;');
+      sheet.addRule('.jot-entry.active .jot-entry-iteration', 'width: '+iter_width+'px;');
+      sheet.addRule('.jot-entry-scroll', 'overflow-y: hidden;');
+      sheet.addRule('.flickity-prev-next-button', 'bottom: -30px;');
+      $this.flickity('resize');
       $this.addClass('active');
       $(document).tooltip('enable');
       // make selected editable
@@ -275,7 +284,10 @@ $(document).ready(function() {
     if (keyCode == 27) {
       // esc
       if ($('.jot-entry.active textarea').length == 0) {
-        $('.jot-entry').removeClass('active');
+        var active = $('.jot-entry.active');
+        sheet.clearRules();
+        active.removeClass('active');
+        active.flickity('resize');
         $('.jot-form-text').focus();
       }
       else {
@@ -287,13 +299,16 @@ $(document).ready(function() {
   $(document).click(function(event) { 
     if(!$(event.target).closest('.jot-entry').length) {
       if ($('.jot-entry.active textarea').length == 0) {
-        $('.jot-entry').removeClass('active');
+        var active = $('.jot-entry.active');
+        sheet.clearRules();
+        active.removeClass('active');
+        active.flickity('resize');
       }
     }
   });
-
 
   // init from storage
   loadState();
   stateToView();
 });
+

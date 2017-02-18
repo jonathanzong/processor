@@ -1,4 +1,8 @@
 .jotting-pane {
+  @include breakpoint(sm) {
+    width: 50%;
+    margin: 0 auto;
+  }
   height: 100vh;
   display: flex;
   flex-flow: column;
