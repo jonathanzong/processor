@@ -67,21 +67,15 @@ function iterate($jotEntry) {
 }
 
 function makeIterationEditable($iterdiv, selectAll) {
-  if ($iterdiv.children('textarea').length > 0) return;
-  var $textarea = $('<textarea>');
-  var text = $iterdiv.text();
-  $textarea.val(text);
-  $iterdiv.empty();
-  $iterdiv.append($textarea);
-  autosize($textarea);
+  if ($iterdiv.attr('contenteditable')) return;
+  $iterdiv.attr('contenteditable', 'true');
   var $jotEntry = $iterdiv.parents('.jot-entry');
-  $jotEntry.flickity('resize');
   $jotEntry.flickity( 'select', $iterdiv.attr('data-idx'));
   if (selectAll) {
-    $textarea.prop('selectionStart', 0);
-    $textarea.prop('selectionEnd', text.length);
+    $iterdiv.prop('selectionStart', 0);
+    $iterdiv.prop('selectionEnd', text.length);
   }
-  $textarea.focus();
+  $iterdiv.focus();
 }
 
 $(document).ready(function() {
@@ -201,17 +195,19 @@ $(document).ready(function() {
   $(document).on('click', '.jot-entry', function() {
     var $this = $(this);
     if (!$this.hasClass('active')) {
-      $('.jot-entry').removeClass('active');
+      sheet.clearRules();
+      var oldActive = $('.jot-entry.active');
+      oldActive.removeClass('active');
+      oldActive.flickity('resize');
       var pos = getFixedPos($this[0]);
       var iter_width = $this.find('.jot-entry-iteration').width();
-      sheet.clearRules();
       sheet.addRule('.jot-entry.active', 'position: fixed; z-index: 999; left: 0px; top: '+pos.top+'px; background: #DADDE0;');
       sheet.addRule('.jot-entry.active .jot-entry-iteration', 'width: '+iter_width+'px;');
       sheet.addRule('.jot-entry-scroll', 'overflow-y: hidden;');
       sheet.addRule('.flickity-prev-next-button', 'bottom: -30px;');
-      $this.flickity('resize');
       $this.addClass('active');
       $(document).tooltip('enable');
+      $this.flickity('resize');
       // make selected editable
       var $iterdiv = $($this.data('flickity').selectedElement);
       makeIterationEditable($iterdiv);
@@ -226,21 +222,17 @@ $(document).ready(function() {
     makeIterationEditable($(this));
   })
   // focus out to finish editing
-  $(document).on('focusout', '.jot-entry-iteration textarea', function() {
+  $(document).on('focusout', '.jot-entry-iteration[contenteditable]', function() {
     var $this = $(this);
-    var text = $this.val();
+    var text = $this.text();
     var $jotEntry = $this.parents('.jot-entry');
-    var $iterdiv = $this.parent('.jot-entry-iteration');
     var data = state[$jotEntry.attr('data-idx')];
-    data.iterations[$iterdiv.attr('data-idx')] = text;
-    $this.remove();
+    data.iterations[$this.attr('data-idx')] = text;
     if (text.trim().length == 0) {
-      $jotEntry.flickity( 'remove', $iterdiv );
+      $jotEntry.flickity( 'remove', $this );
       $jotEntry.flickity( 'previous' );
-    } else {
-      $iterdiv.text(text);
     }
-    $jotEntry.flickity('resize');
+    $this.removeAttr('contenteditable');
     saveState();
   });
   // tab to iterate tooltip
@@ -273,7 +265,7 @@ $(document).ready(function() {
     }
     else if (e.keyCode == 8 || e.keyCode == 46) {
       // delete || backspace
-      if ($('.jot-entry.active textarea').length == 0) {
+      if ($('.jot-entry.active[contenteditable]').length == 0) {
         $(this).remove();
       }
     }
@@ -283,11 +275,11 @@ $(document).ready(function() {
     var keyCode = e.keyCode || e.which;
     if (keyCode == 27) {
       // esc
-      if ($('.jot-entry.active textarea').length == 0) {
-        var active = $('.jot-entry.active');
+      if ($('.jot-entry.active[contenteditable]').length == 0) {
+        var oldActive = $('.jot-entry.active');
         sheet.clearRules();
-        active.removeClass('active');
-        active.flickity('resize');
+        oldActive.removeClass('active');
+        oldActive.flickity('resize');
         $('.jot-form-text').focus();
       }
       else {
@@ -298,11 +290,11 @@ $(document).ready(function() {
   // click outside to deselect a jot
   $(document).click(function(event) { 
     if(!$(event.target).closest('.jot-entry').length) {
-      if ($('.jot-entry.active textarea').length == 0) {
-        var active = $('.jot-entry.active');
+      if ($('.jot-entry.active[contenteditable]').length == 0) {
+        var oldActive = $('.jot-entry.active');
         sheet.clearRules();
-        active.removeClass('active');
-        active.flickity('resize');
+        oldActive.removeClass('active');
+        oldActive.flickity('resize');
       }
     }
   });

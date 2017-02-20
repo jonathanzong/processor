@@ -92,6 +92,12 @@ input[type="submit"] {
   padding: 5px 15px;
 }
 
+[contenteditable="true"]:active,
+[contenteditable="true"]:focus{
+  border:none;
+  outline:none;
+}
+
 .flickity-prev-next-button {
   width: 15px;
   height: 15px;
